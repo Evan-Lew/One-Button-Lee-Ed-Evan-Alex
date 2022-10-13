@@ -28,7 +28,11 @@ characters = [
 `
 rr
 rr
+`,
 `
+yy
+yy
+`,
 ];
 
 // Game design variable container
@@ -66,10 +70,15 @@ function update() {
         clouds = [];
         if (clouds.length === 0) {
             const c1_posX = rnd(8, 30);
-            const c1_posY = rnd(2, 8);
+            const c1_posY = rnd(2, 10);
+            const c2_posX = rnd(65, 90);
+            const c2_posY = rnd(2, 10);
             clouds.push({ pos: vec(c1_posX, c1_posY) });
             clouds.push({ pos: vec(c1_posX - 2, c1_posY + 2) });
             clouds.push({ pos: vec(c1_posX + 6, c1_posY + 2) });
+            clouds.push({ pos: vec(c2_posX, c2_posY) });
+            clouds.push({ pos: vec(c2_posX - 2, c2_posY + 2) });
+            clouds.push({ pos: vec(c2_posX + 6, c2_posY + 2) });
         }
 
     }
@@ -84,19 +93,22 @@ function update() {
     rect(41, 7, 18, 9);
     rect(38, 10, 24, 3);
 
-    // Clouds
+    // Cloud 1
     color("white");
     rect(clouds[0].pos, 6, 4);
     rect(clouds[1].pos, 2, 2);
     rect(clouds[2].pos, 2, 2);
-    
-    clouds[0].pos.x -= 0.07;
-    clouds[1].pos.x -= 0.07;
-    clouds[2].pos.x -= 0.07;
-    
-    clouds[0].pos.x = wrap(clouds[0].pos.x, -7, 107);
-    clouds[1].pos.x = wrap(clouds[1].pos.x, -7, 107);
-    clouds[2].pos.x = wrap(clouds[2].pos.x, -7, 107);
+
+    // Cloud 2
+    rect(clouds[3].pos, 6, 4);
+    rect(clouds[4].pos, 2, 2);
+    rect(clouds[5].pos, 2, 2);
+
+    // Move the clouds
+    for (let i = 0; i < 6; i++) {
+        clouds[i].pos.x -= 0.06;
+        clouds[i].pos.x = wrap(clouds[i].pos.x, -7, 107);
+    }
 
     // Trunk
     color("black");
