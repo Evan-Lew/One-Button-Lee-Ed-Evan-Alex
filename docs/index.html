@@ -150,21 +150,30 @@ function update() {
     rect(76, 33, 22, 12);
 
     // 2nd gray belt level
-    rect(16, 49, 24, 12);
-    rect(43, 46, 15, 15);
-    rect(60, 49, 24, 12);
+    rect(16, 49, 24, 13);
+    rect(43, 46, 15, 16);
+    rect(60, 49, 24, 13);
 
-    rect(2, 45, 12, 16);
-    rect(86, 45, 12, 16);
+    rect(2, 45, 12, 17);
+    rect(86, 45, 12, 17);
     rect(14, 45, 10, 1);
     rect(26, 45, 48, 1);
     rect(76, 45, 10, 1);
     
+    // 3rd gray belt level
+    rect(2, 62, 3, 16);
+    rect(7, 65, 14, 13);
+    rect(23, 62, 10, 16);
+    rect(35, 65, 14, 13);
+    rect(51, 65, 14, 13);
+    rect(67, 62, 10, 16);
+    rect(79, 65, 14, 13);
+    rect(95, 62, 3, 16);
     
 
     // --End Gray Rectangles--
 
-    // 1st Left Hole
+    // 1st Left Hole (1)
     color("black");
     rect(21, 33, 8, 1);
     rect(22, 34, 6, 1);
@@ -173,7 +182,7 @@ function update() {
     rect(22, 45, 6, 1);
     rect(11, 46, 34, 3);
 
-    // 1st Right Hole
+    // 1st Right Hole (2)
     rect(71, 33, 8, 1);
     rect(72, 34, 6, 1);
     rect(73, 35, 4, 10);
@@ -181,29 +190,85 @@ function update() {
     rect(72, 45, 6, 1);
     rect(55, 46, 34, 3);
 
-    // 2nd Left Hole
+    // 2nd Left Hole (1)
     rect(11, 49, 8, 1);
     rect(12, 50, 6, 1);
     rect(13, 51, 4, 10);
 
-    // 2nd Middle Left Hole
+    rect(12, 61, 6, 1);
+    rect(3, 62, 23, 3);
+
+    // 2nd Middle Left Hole (2)
     rect(37, 49, 8, 1);
     rect(38, 50, 6, 1);
     rect(39, 51, 4, 10);
 
-    // 2nd Right Hole
+    rect(38, 61, 6, 1);
+    rect(30, 62, 40, 3);
+
+    // 2nd Right Hole (4)
     rect(81, 49, 8, 1);
     rect(82, 50, 6, 1);
     rect(83, 51, 4, 10);
 
-    // 2nd Middle Right Hole
+    rect(82, 61, 6, 1);
+    rect(74, 62, 23, 3);
+
+    // 2nd Middle Right Hole (3)
     rect(55, 49, 8, 1);
     rect(56, 50, 6, 1);
     rect(57, 51, 4, 10);
-   
 
-    text(moving_left.toString(), 2, 10); // debug statement to show moving_left variable
-    text(time.toString(), 2, 90);
+    rect(56, 61, 6, 1);
+
+    // 3rd Left Hole (1)
+    rect(3, 65, 7, 1);
+    rect(4, 66, 5, 1);
+    rect(4, 67, 4, 10);
+
+    rect(3, 77, 6, 1);
+
+    // 3rd Hole (2)
+    rect(18, 65, 8, 1);
+    rect(19, 66, 6, 1);
+    rect(20, 67, 4, 10);
+
+    rect(19, 77, 6, 1);
+
+    // 3rd Hole (3)
+    rect(30, 65, 8, 1);
+    rect(31, 66, 6, 1);
+    rect(32, 67, 4, 10);
+
+    rect(31, 77, 6, 1);
+
+    // 4th Hole (4)
+    rect(46, 65, 8, 1);
+    rect(47, 66, 6, 1);
+    rect(48, 67, 4, 10);
+
+    rect(47, 77, 6, 1);
+
+    // 5th Hole (5)
+    rect(62, 65, 8, 1);
+    rect(63, 66, 6, 1);
+    rect(64, 67, 4, 10);
+    
+    rect(63, 77, 6, 1);
+
+    // 6th Hole (6)
+    rect(74, 65, 8, 1);
+    rect(75, 66, 6, 1);
+    rect(76, 67, 4, 10);
+
+    rect(75, 77, 6, 1);
+
+    // 7th Hole (7)
+    rect(90, 65, 7, 1);
+    rect(91, 66, 5, 1);
+    rect(92, 67, 4, 10);
+
+    rect(91, 77, 5, 1);
     
     // Input to change the conveyor belt directions    
     if (input.isPressed) {
@@ -239,6 +304,10 @@ function update() {
 
         return a.pos.y > 90;
     });
+
+    // Debug Statements
+    text(moving_left.toString(), 2, 10); // shows moving_left boolean
+    //text(time.toString(), 2, 90); // shows time variable
 }
 
 addEventListener("load", onLoad);
