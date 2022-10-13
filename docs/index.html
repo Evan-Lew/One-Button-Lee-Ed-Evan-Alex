@@ -49,7 +49,7 @@ const G = {
 // Game runtime options
 options = {
 	viewSize: {x: G.WIDTH, y: G.HEIGHT},
-    isReplayEnabled: true,
+    //isReplayEnabled: true,
     //isPlayingBgm: true,
     seed: 1,
 };
@@ -57,7 +57,8 @@ options = {
 // JSDoc comments for typing
 /** @type {Vector[]} */
 let clouds;
-let apples;
+let red_apples;
+let yellow_apples;
 
 // The game loop function
 function update() {
@@ -68,11 +69,15 @@ function update() {
         moving_left = true;
         time = 0;
         spawn_buffer = 5;
+        spawn_red = true;
+        bad_apples = 5;
 
-        apples = [];
-        if (apples.length === 0) {
-            apples.push({ pos: vec(a_posX, a_posY) });
+        red_apples = [];
+        if (red_apples.length === 0) {
+            red_apples.push({ pos: vec(a_posX, a_posY) });
         }
+
+        yellow_apples = [];
 
         clouds = [];
         if (clouds.length === 0) {
@@ -268,27 +273,101 @@ function update() {
     rect(91, 66, 5, 1);
     rect(92, 67, 4, 10);
 
-    rect(91, 77, 5, 1);
+    rect(91, 77, 6, 1);
+
+    // Bucket 1
+    rect(3, 90, 6, 1);
+    rect(3, 87, 1, 3);
+    rect(8, 87, 1, 3);
+    color("purple");
+    rect(4, 88, 4, 2);
+
+    // Bucket 2
+    color("black");
+    rect(19, 90, 6, 1);
+    rect(19, 87, 1, 3);
+    rect(24, 87, 1, 3);
+    color("red");
+    rect(20, 88, 4, 2);
     
+
+    // Bucket 3
+    color("black");
+    rect(31, 90, 6, 1);
+    rect(31, 87, 1, 3);
+    rect(36, 87, 1, 3);
+    color("yellow");
+    rect(32, 88, 4, 2);
+
+    // Bucket 4
+    color("black");
+    rect(47, 90, 6, 1);
+    rect(47, 87, 1, 3);
+    rect(52, 87, 1, 3);
+    color("purple");
+    rect(48, 88, 4, 2);
+
+
+    // Bucket 5
+    color("black");
+    rect(63, 90, 6, 1);
+    rect(63, 87, 1, 3);
+    rect(68, 87, 1, 3);
+    color("red");
+    rect(64, 88, 4, 2);
+
+    // Bucket 6
+    color("black");
+    rect(75, 90, 6, 1);
+    rect(75, 87, 1, 3);
+    rect(80, 87, 1, 3);
+    color("yellow");
+    rect(76, 88, 4, 2);
+
+    // Bucket 7
+    color("black");
+    rect(91, 90, 6, 1);
+    rect(91, 87, 1, 3);
+    rect(96, 87, 1, 3);
+    color("purple");
+    rect(92, 88, 4, 2);
+
     // Input to change the conveyor belt directions    
     if (input.isPressed) {
         moving_left == true ? (moving_left = false) : (moving_left = true);    
     }
 
-    // Randomly spawn apples in range of 3-10 seconds
+    // Randomly spawn apples in range of 3-7 seconds
     time += 1/60;
-    if (time > spawn_buffer) {
-        var posX = rnd(46, 54);
-        var posY = rnd(6, 14);
-        apples.push({ pos: vec(posX, posY) });
-        spawn_buffer += rnd(5, 10);
+
+    // Randomly change apple color
+    num = rnd(1, 3);
+    if (floor(num) == 1) {
+        spawn_red = false;
+    }
+    else {
+        spawn_red = true;
     }
 
-    // Draw the apples
-    remove(apples, (a) => {
+    // Spawn red apples
+    if (time > spawn_buffer && spawn_red == true) {
+        var posX = rnd(46, 54);
+        var posY = rnd(6, 14);
+        red_apples.push({ pos: vec(posX, posY) });
+        spawn_buffer += rnd(2, 5); // controls how fast the red apples spawn
+    }
+    // Spawn yellow apples
+    else if (time > spawn_buffer && spawn_red == false) {
+        var posX = rnd(46, 54);
+        var posY = rnd(6, 14);
+        yellow_apples.push({ pos: vec(posX, posY) });
+        spawn_buffer += rnd(2, 5); // controls how fast the  yellow apples spawn
+    }
+
+    // Draw the red apples
+    remove(red_apples, (a) => {
         color("black");
         var isCollidingwithGray = char("a", a.pos).isColliding.rect.light_black;
-
         // Move the apple to the left when touching light_black
         if (isCollidingwithGray && moving_left) {
             a.pos.x -= 0.1;
@@ -302,11 +381,65 @@ function update() {
             a.pos.y += 0.6;
         }
 
+        var isCollidingwithRed = char("a", a.pos).isColliding.rect.red;
+        if (isCollidingwithRed) {
+            score += 0.25;
+        }
+        var isCollidingwithPurple = char("a", a.pos).isColliding.rect.purple;
+        if (isCollidingwithPurple) {
+            score -= 0.25;
+            bad_apples -= 0.25;
+        }
+        var isCollidingwithYellow = char("a", a.pos).isColliding.rect.yellow;
+        if (isCollidingwithYellow) {
+            score += 0;
+        }
+
         return a.pos.y > 90;
     });
 
+    // Draw the yellow apples
+    remove(yellow_apples, (ya) => {
+        color("black");
+        var isCollidingwithGray = char("b", ya.pos).isColliding.rect.light_black;
+        if (isCollidingwithGray && moving_left) {
+            ya.pos.x -= 0.1;
+        }
+        else if (isCollidingwithGray && moving_left == false) {
+            ya.pos.x += 0.1;
+        }
+        else {
+            ya.pos.y += 0.6;
+        }
+
+        var isCollidingwithYellow = char("b", ya.pos).isColliding.rect.yellow;
+        if (isCollidingwithYellow) {
+            score += 0.25;
+        }
+        var isCollidingwithPurple = char("b", ya.pos).isColliding.rect.purple;
+        if (isCollidingwithPurple) {
+            score -= 0.25;
+            bad_apples -= 0.25;
+        }
+        var isCollidingwithRed = char("b", ya.pos).isColliding.rect.red;
+        if (isCollidingwithRed) {
+            score += 0;
+        }
+
+        return ya.pos.y > 91;
+    });
+
+    // End the game
+    if (bad_apples < 0) {
+       end(); 
+    }
+
+    // Update health bar
+    text("HEALTH:", 25, 95);
+    text(bad_apples.toString(), 68, 95);
+    
     // Debug Statements
-    text(moving_left.toString(), 2, 10); // shows moving_left boolean
+    //text(moving_left.toString(), 2, 10); // shows moving_left boolean
     //text(time.toString(), 2, 90); // shows time variable
 }
 
