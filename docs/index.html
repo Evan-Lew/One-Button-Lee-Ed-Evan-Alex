@@ -25,7 +25,10 @@ description = `
 
 // The array of custom sprites
 characters = [
-
+`
+rr
+rr
+`
 ];
 
 // Game design variable container
@@ -43,12 +46,21 @@ options = {
 };
 
 // JSDoc comments for typing
+/** @type {Vector[]} */
+let apples;
 
 // The game loop function
 function update() {
     // The init function running at startup
 	if (!ticks) {
-        
+        const posX = 45;
+        const posY = 10; // floor 32
+
+        apples = [];
+        if (apples.length === 0) {
+            apples.push({ pos: vec(posX, posY) })
+        }
+
     }
     // Sky color
     color("light_cyan");
@@ -81,7 +93,12 @@ function update() {
 
     // Underground
     color("light_black");
-    rect(2, 33, 96, 77);
+    //rect(2, 33, 96, 77); // full rect
+
+    // These rectangles are necessary to ensure the apple keeps moving when on light_black -Evan
+    rect(2, 33, 22, 20);
+    rect(26, 33, 19, 20);
+    rect(24, 70, 2, 1);
 
     // Left Hole
     color("black");
@@ -99,6 +116,24 @@ function update() {
     // First Belt
     color("white");
     rect(20, 45, 63, 7);
+
+    // Draw the apples
+    remove(apples, (a) => {
+        color("black");
+        //char("a", a.pos);
+        var isCollidingwithGray = char("a", a.pos).isColliding.rect.light_black;
+
+        // Move the apple to right when touching light_black
+        if (isCollidingwithGray) {
+            a.pos.x -= 0.1;
+        }
+        // Drop the apple
+        else {
+            a.pos.y += 0.6;
+        }
+
+        return a.pos.y > 90;
+    });
 }
 
 addEventListener("load", onLoad);
