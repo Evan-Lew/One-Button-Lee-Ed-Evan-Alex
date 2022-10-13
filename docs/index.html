@@ -47,6 +47,7 @@ options = {
 
 // JSDoc comments for typing
 /** @type {Vector[]} */
+let clouds;
 let apples;
 
 // The game loop function
@@ -54,11 +55,21 @@ function update() {
     // The init function running at startup
 	if (!ticks) {
         const posX = 45;
-        const posY = 10; // floor 32
+        const posY = 10; // The grass is y: 32
+        moving_left = true;
 
         apples = [];
         if (apples.length === 0) {
-            apples.push({ pos: vec(posX, posY) })
+            apples.push({ pos: vec(posX, posY) });
+        }
+
+        clouds = [];
+        if (clouds.length === 0) {
+            const c1_posX = rnd(8, 30);
+            const c1_posY = rnd(2, 8);
+            clouds.push({ pos: vec(c1_posX, c1_posY) });
+            clouds.push({ pos: vec(c1_posX - 2, c1_posY + 2) });
+            clouds.push({ pos: vec(c1_posX + 6, c1_posY + 2) });
         }
 
     }
@@ -72,6 +83,20 @@ function update() {
     rect(44, 4, 12, 3);
     rect(41, 7, 18, 9);
     rect(38, 10, 24, 3);
+
+    // Clouds
+    color("white");
+    rect(clouds[0].pos, 6, 4);
+    rect(clouds[1].pos, 2, 2);
+    rect(clouds[2].pos, 2, 2);
+    
+    clouds[0].pos.x -= 0.07;
+    clouds[1].pos.x -= 0.07;
+    clouds[2].pos.x -= 0.07;
+    
+    clouds[0].pos.x = wrap(clouds[0].pos.x, -7, 107);
+    clouds[1].pos.x = wrap(clouds[1].pos.x, -7, 107);
+    clouds[2].pos.x = wrap(clouds[2].pos.x, -7, 107);
 
     // Trunk
     color("black");
@@ -97,7 +122,9 @@ function update() {
 
     // These rectangles are necessary to ensure the apple keeps moving when on light_black -Evan
     rect(2, 33, 22, 20);
-    rect(26, 33, 19, 20);
+    rect(26, 33, 51, 20);
+    rect(79, 33, 19, 20);
+
     rect(24, 70, 2, 1);
 
     // Left Hole
@@ -113,9 +140,16 @@ function update() {
 
     rect(76, 35, 4, 10);
 
-    // First Belt
-    color("white");
-    rect(20, 45, 63, 7);
+    // // First Belt
+    // color("white");
+    // rect(20, 45, 63, 7);
+
+    text(moving_left.toString(), 3, 10); // debug statement to show moving_left variable
+    
+    // Input to change the conveyor belt directions    
+    if (input.isPressed) {
+        moving_left == true ? (moving_left = false) : (moving_left = true);    
+    }
 
     // Draw the apples
     remove(apples, (a) => {
@@ -123,9 +157,13 @@ function update() {
         //char("a", a.pos);
         var isCollidingwithGray = char("a", a.pos).isColliding.rect.light_black;
 
-        // Move the apple to right when touching light_black
-        if (isCollidingwithGray) {
+        // Move the apple to the left when touching light_black
+        if (isCollidingwithGray && moving_left) {
             a.pos.x -= 0.1;
+        }
+        // Move the apple right
+        else if (isCollidingwithGray && moving_left == false) {
+            a.pos.x += 0.1;
         }
         // Drop the apple
         else {
