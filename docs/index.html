@@ -16,11 +16,16 @@
 
 <script>
 // The title of the game to be displayed on the title screen
-title = "APPLE DROP";
+title = "NEWTON'S LAW";
 
 // The description, which is also displayed on the title screen
 description = `
+[Click]   Turn
 
+ Be the FORCE
+ that will be
+  applied to 
+    apples
 `;
 
 // The array of custom sprites
@@ -58,13 +63,15 @@ let apples;
 function update() {
     // The init function running at startup
 	if (!ticks) {
-        const posX = 45;
-        const posY = 10; // The grass is y: 32
+        const a_posX = rnd(46, 54);
+        const a_posY = rnd(6, 14);
         moving_left = true;
+        time = 0;
+        spawn_buffer = 5;
 
         apples = [];
         if (apples.length === 0) {
-            apples.push({ pos: vec(posX, posY) });
+            apples.push({ pos: vec(a_posX, a_posY) });
         }
 
         clouds = [];
@@ -86,13 +93,6 @@ function update() {
     color("light_cyan");
     rect(0, 0, 100, 100);
 
-    // Tree
-    color("green");
-    rect(47, 1, 6, 3);
-    rect(44, 4, 12, 3);
-    rect(41, 7, 18, 9);
-    rect(38, 10, 24, 3);
-
     // Cloud 1
     color("white");
     rect(clouds[0].pos, 6, 4);
@@ -106,15 +106,27 @@ function update() {
 
     // Move the clouds
     for (let i = 0; i < 6; i++) {
-        clouds[i].pos.x -= 0.06;
+        if (moving_left) {
+            clouds[i].pos.x -= 0.06;
+        }
+        else {
+            clouds[i].pos.x += 0.06;
+        }
         clouds[i].pos.x = wrap(clouds[i].pos.x, -7, 107);
     }
+
+    // Tree
+    color("green");
+    rect(47, 1, 6, 3);
+    rect(44, 4, 12, 3);
+    rect(41, 7, 18, 9);
+    rect(38, 10, 24, 3);
 
     // Trunk
     color("black");
     rect(48, 16, 4, 12);
 
-    // Grass
+    // Grass - the grass is at y: 32
     rect(0, 20, 100, 1);
     color("light_green");
     rect(0, 21, 48, 7);
@@ -156,17 +168,26 @@ function update() {
     // color("white");
     // rect(20, 45, 63, 7);
 
-    text(moving_left.toString(), 3, 10); // debug statement to show moving_left variable
+    text(moving_left.toString(), 2, 10); // debug statement to show moving_left variable
+    text(time.toString(), 2, 90);
     
     // Input to change the conveyor belt directions    
     if (input.isPressed) {
         moving_left == true ? (moving_left = false) : (moving_left = true);    
     }
 
+    // Randomly spawn apples in range of 3-10 seconds
+    time += 1/60;
+    if (time > spawn_buffer) {
+        var posX = rnd(46, 54);
+        var posY = rnd(6, 14);
+        apples.push({ pos: vec(posX, posY) });
+        spawn_buffer += rnd(5, 10);
+    }
+
     // Draw the apples
     remove(apples, (a) => {
         color("black");
-        //char("a", a.pos);
         var isCollidingwithGray = char("a", a.pos).isColliding.rect.light_black;
 
         // Move the apple to the left when touching light_black
