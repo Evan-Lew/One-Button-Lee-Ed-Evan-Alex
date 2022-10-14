@@ -21,6 +21,7 @@ title = "NEWTON'S LAW";
 // The description, which is also displayed on the title screen
 description = `
 [Click]   Turn
+
  Be the FORCE
  that will be
   applied to 
@@ -49,8 +50,8 @@ const G = {
 options = {
 	viewSize: {x: G.WIDTH, y: G.HEIGHT},
     //isReplayEnabled: true,
-    isPlayingBgm: true,
-    seed: 19,
+    //isPlayingBgm: true,
+    seed: 1,
 };
 
 // JSDoc comments for typing
@@ -58,6 +59,7 @@ options = {
 let clouds;
 let red_apples;
 let yellow_apples;
+let sky;
 
 // The game loop function
 function update() {
@@ -92,10 +94,33 @@ function update() {
             clouds.push({ pos: vec(c2_posX + 6, c2_posY + 2) });
         }
 
+        sky = [];
+        //posX1,Y1 = cyan sky
+        //posX2,Y2 = purple sky
+        for(let i = 0; i < 20; i+=2){
+            sky.push({posX1: -i, posY1: i, posX2: -i + 150, posY2: i});
+        }
+
     }
-    // Sky color
+    // day color
     color("light_cyan");
-    rect(0, 0, 100, 100);
+    for (i = 0; i < 10; i++){
+        rect(sky[i].posX1, sky[i].posY1, 150, 2);
+    }
+
+    //dusk
+    color("light_purple");
+    for (i = 0; i < 10; i++){
+        rect(sky[i].posX2, sky[i].posY2, 151, 2);
+    }
+
+    
+    for (i = 0; i < 10; i++){
+        sky[i].posX1 -= 1;
+        sky[i].posX1 = wrap(sky[i].posX1, -151, 150);
+        sky[i].posX2 -= 1;
+        sky[i].posX2 = wrap(sky[i].posX2, -151, 150);
+    }
 
     // Cloud 1
     color("white");
@@ -332,8 +357,7 @@ function update() {
     rect(92, 88, 4, 2);
 
     // Input to change the conveyor belt directions    
-    if (input.isPressed) {
-        play("jump");
+    if (input.isJustPressed) {
         moving_left == true ? (moving_left = false) : (moving_left = true);    
     }
 
@@ -384,18 +408,15 @@ function update() {
         var isCollidingwithRed = char("a", a.pos).isColliding.rect.red;
         if (isCollidingwithRed) {
             score += 0.25;
-            play("coin");
         }
         var isCollidingwithPurple = char("a", a.pos).isColliding.rect.purple;
         if (isCollidingwithPurple) {
             score -= 0.25;
             bad_apples -= 0.25;
-            play("click");
         }
         var isCollidingwithYellow = char("a", a.pos).isColliding.rect.yellow;
         if (isCollidingwithYellow) {
             score += 0;
-            play("click");
         }
 
         return a.pos.y > 90;
@@ -418,18 +439,15 @@ function update() {
         var isCollidingwithYellow = char("b", ya.pos).isColliding.rect.yellow;
         if (isCollidingwithYellow) {
             score += 0.25;
-            play("coin");
         }
         var isCollidingwithPurple = char("b", ya.pos).isColliding.rect.purple;
         if (isCollidingwithPurple) {
             score -= 0.25;
             bad_apples -= 0.25;
-            play("click");
         }
         var isCollidingwithRed = char("b", ya.pos).isColliding.rect.red;
         if (isCollidingwithRed) {
             score += 0;
-            play("click");
         }
 
         return ya.pos.y > 91;
@@ -437,7 +455,6 @@ function update() {
 
     // End the game
     if (bad_apples < 0) {
-       play("explosion");
        end(); 
     }
 
